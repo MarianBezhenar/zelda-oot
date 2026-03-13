@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Legend of Zelda: Ocarina of Time - A Tribute</title>
+    
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Three.js CDN -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;500;600;700&family=Cinzel+Decorative:wght@400;700&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'forest-dark': '#0b1f14',
+                        'forest-deep': '#0f2e1c',
+                        'forest-mid': '#1a4a2e',
+                        'emerald-glow': '#2d9e5c',
+                        'gold-accent': '#c9a227',
+                        'gold-soft': '#d4b84a',
+                        'cyan-magic': '#4dd0e1',
+                    },
+                    fontFamily: {
+                        'fantasy': ['Cinzel Decorative', 'serif'],
+                        'serif': ['Cinzel', 'serif'],
+                        'body': ['Cormorant Garamond', 'serif'],
+                    },
+                    animation: {
+                        'glow-pulse': 'glowPulse 3s ease-in-out infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'shimmer': 'shimmer 2s linear infinite',
+                    },
+                    keyframes: {
+                        glowPulse: {
+                            '0%, 100%': { boxShadow: '0 0 20px rgba(45, 158, 92, 0.3)' },
+                            '50%': { boxShadow: '0 0 40px rgba(45, 158, 92, 0.6)' },
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-10px)' },
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' },
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body class="text-gray-200 font-body overflow-x-hidden">
+    <!-- PRELOADER / INTRO SCREEN -->
+    <div id="preloader" class="fixed inset-0 z-[9999] bg-[#0a0f0a] flex flex-col items-center justify-center cursor-pointer transition-opacity duration-1000">
+        
+        <!-- Background subtle pattern -->
+        <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 50% 50%, rgba(45, 158, 92, 0.1) 0%, transparent 70%);"></div>
+        
+        <!-- Content Container -->
+        <div id="preloader-content" class="relative z-10 text-center px-6 opacity-0 transform scale-95 transition-all duration-1000">
+            
+            <!-- Zelda Logo Placeholder (5 second fade-in) -->
+            <div class="mb-8 flex justify-center">
+               <div class="w-[700px] h-[500px] flex items-center justify-center opacity-0 transition-opacity duration-[5000ms] linear" id="preloader-logo-img">
+                    <img src="../zelda-oot-site/images/zelda-bg.png" alt="Zelda Logo" class="w-full h-full object-contain rounded">
+                </div>
+            </div>
+
+            
+            <!-- Triforce Symbol (3 second fade-in, starts at 5s) -->
+            <div class="mb-8 flex justify-center opacity-0 transition-opacity duration-[3000ms] ease-out" id="preloader-triforce" style="transition-delay: 5s;">
+                <div class="relative">
+                    <!-- Animated Triforce -->
+                    <div class="triforce-loader">
+                        <div class="triforce-piece top"></div>
+                        <div class="triforce-piece left"></div>
+                        <div class="triforce-piece right"></div>
+                    </div>
+                    <!-- Glow effect -->
+                    <div class="absolute inset-0 blur-xl bg-emerald-glow/30 animate-pulse"></div>
+                </div>
+            </div>
+            
+            <!-- Welcome Text (3 second fade-in, starts at 8s) -->
+            <div class="max-w-md mx-auto opacity-0 transform translate-y-4 transition-all duration-[3000ms] ease-out" id="preloader-text" style="transition-delay: 8s;">
+                <p class="font-body text-gray-400 text-base md:text-lg leading-relaxed mb-4">
+                    Welcome to Zelda Ocarina of Time website
+                </p>
+                <p class="font-body text-gray-500 text-sm italic">
+                    (it's not an original Zelda's website, made by Marian)
+                </p>
+            </div>
+            
+            <!-- Click hint (3 second fade-in, starts at 11s) -->
+            <div class="mt-12 opacity-0 transition-opacity duration-[3000ms] ease-out" id="preloader-hint" style="transition-delay: 11s;">
+                <div class="animate-bounce">
+                    <svg class="w-6 h-6 mx-auto text-emerald-glow/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path>
+                    </svg>
+                </div>
+                <p class="font-serif text-xs text-emerald-glow/60 tracking-widest mt-3 animate-pulse">
+                    CLICK ANYWHERE TO START
+                </p>
+            </div>
+        </div>
+        
+        <!-- Progress bar at bottom -->
+        <div class="absolute bottom-0 left-0 w-full h-1 bg-gray-800">
+            <div id="preloader-progress" class="h-full bg-gradient-to-r from-emerald-glow to-gold-accent w-0 transition-all duration-[14000ms] ease-out"></div>
+        </div>
+    </div>
+    <!-- Noise overlay -->
+    <div class="noise-overlay"></div>
+    
+    <!-- Particle canvas -->
+    <canvas id="particle-canvas"></canvas>
+    
+    <!-- Navigation -->
+    <nav id="navbar" class="fixed top-0 left-0 w-full z-50 transition-all duration-500 bg-transparent">
+        <div class="w-full px-6 lg:px-12 py-4">
+            <div class="flex items-center justify-between">
+                <!-- Logo - Clickable to Home -->
+                <div class="logo-audio">
+                <a href="#home" class="logo-link font-fantasy text-xl lg:text-2xl gold-gradient tracking-wider cursor-pointer">
+                    ZELDA
+                </a>
+
+                <!-- Audio Player (Minimal with Controls) -->
+                <div class="flex items-center gap-4 ml-4 pl-4 border-l border-emerald-glow/30">
+                    <!-- Track Name -->
+                    <div class="hidden sm:block w-[140px] overflow-hidden">
+                        <div class="text-xs text-emerald-glow/80 font-serif tracking-wider truncate animate-pulse" id="track-name">Select a track</div>
+                        <div class="text-[10px] text-gray-500 font-serif tracking-wider" id="track-status">Ready</div>
+                    </div>
+                    
+                    <!-- Controls Group with Gaps -->
+                    <div class="flex items-center gap-3">
+                        
+                        <!-- Previous Track -->
+                        <button id="audio-prev" class="w-8 h-8 flex items-center justify-center rounded-full bg-forest-mid/30 border border-emerald-glow/20 hover:border-emerald-glow/60 hover:bg-emerald-glow/10 transition-all duration-300 group" aria-label="Previous track">
+                            <svg class="w-3 h-3 text-gray-400 group-hover:text-emerald-glow transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M6 6h2v12H6zm3.5 6l8.5 6V6z"/>
+                            </svg>
+                        </button>
+                        
+                        <!-- Pause/Play (Main Button - Slightly Larger) -->
+                        <button id="audio-toggle" class="relative w-10 h-10 flex items-center justify-center rounded-full bg-forest-mid/60 border border-emerald-glow/40 hover:border-emerald-glow hover:bg-emerald-glow/20 transition-all duration-300 group" aria-label="Toggle music">
+                            
+                            <!-- Sound Waves (Left side) -->
+                            <div class="absolute right-full mr-2 flex items-center gap-[2px] h-4 opacity-0 group-hover:opacity-100 transition-opacity" id="sound-waves">
+                                <div class="w-[2px] bg-emerald-glow/60 rounded-full animate-[wave_1s_ease-in-out_infinite] h-1"></div>
+                                <div class="w-[2px] bg-emerald-glow/60 rounded-full animate-[wave_1s_ease-in-out_infinite_0.1s] h-2"></div>
+                                <div class="w-[2px] bg-emerald-glow/60 rounded-full animate-[wave_1s_ease-in-out_infinite_0.2s] h-3"></div>
+                                <div class="w-[2px] bg-emerald-glow/60 rounded-full animate-[wave_1s_ease-in-out_infinite_0.3s] h-2"></div>
+                            </div>
+                            
+                            <!-- Play Icon -->
+                            <svg id="play-icon" class="w-4 h-4 text-emerald-glow ml-0.5" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M8 5v14l11-7z"/>
+                            </svg>
+                            
+                            <!-- Pause Icon (hidden by default) -->
+                            <svg id="pause-icon" class="w-4 h-4 text-emerald-glow hidden" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>
+                            </svg>
+                        </button>
+                        
+                        <!-- Next Track -->
+                        <button id="audio-next" class="w-8 h-8 flex items-center justify-center rounded-full bg-forest-mid/30 border border-emerald-glow/20 hover:border-emerald-glow/60 hover:bg-emerald-glow/10 transition-all duration-300 group" aria-label="Next track">
+                            <svg class="w-3 h-3 text-gray-400 group-hover:text-emerald-glow transition-colors" fill="currentColor" viewBox="0 0 24 24">
+                                <path d="M6 18l8.5-6L6 6v12zM16 6v12h2V6h-2z"/>
+                            </svg>
+                        </button>
+                        
+                    </div>
+                </div>
+                </div>
+                
+                <!-- Desktop Navigation -->
+                <div class="hidden md:flex items-center gap-8">
+                    <a href="#home" class="nav-link font-serif text-sm tracking-widest text-gray-300 hover:text-emerald-glow transition-colors">HOME</a>
+                    <a href="#characters" class="nav-link font-serif text-sm tracking-widest text-gray-300 hover:text-emerald-glow transition-colors">CHARACTERS</a>
+                    <a href="#story" class="nav-link font-serif text-sm tracking-widest text-gray-300 hover:text-emerald-glow transition-colors">STORY</a>
+                    <a href="#world" class="nav-link font-serif text-sm tracking-widest text-gray-300 hover:text-emerald-glow transition-colors">WORLD</a>
+                    <a href="#legacy" class="nav-link font-serif text-sm tracking-widest text-gray-300 hover:text-emerald-glow transition-colors">LEGACY</a>
+                </div>
+                
+                <!-- Mobile menu button with animation -->
+                <button id="mobile-menu-btn" class="md:hidden text-gray-300 hover:text-emerald-glow transition-colors p-2">
+                    <svg id="hamburger-icon" class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                        <line class="hamburger-line" x1="4" y1="6" x2="20" y2="6"></line>
+                        <line class="hamburger-line" x1="4" y1="12" x2="20" y2="12"></line>
+                        <line class="hamburger-line" x1="4" y1="18" x2="20" y2="18"></line>
+                    </svg>
+                </button>
+            </div>
+        </div>
+        
+        <!-- Mobile menu with slide animation -->
+        <div id="mobile-menu" class="md:hidden bg-forest-dark/80 backdrop-blur-md border-t border-emerald-glow/20">
+            <div class="px-6 py-4 space-y-4">
+                <a href="#home" class="block font-serif text-sm tracking-widest text-gray-300 hover:text-emerald-glow transition-colors py-2">HOME</a>
+                <a href="#characters" class="block font-serif text-sm tracking-widest text-gray-300 hover:text-emerald-glow transition-colors py-2">CHARACTERS</a>
+                <a href="#story" class="block font-serif text-sm tracking-widest text-gray-300 hover:text-emerald-glow transition-colors py-2">STORY</a>
+                <a href="#world" class="block font-serif text-sm tracking-widest text-gray-300 hover:text-emerald-glow transition-colors py-2">WORLD</a>
+                <a href="#legacy" class="block font-serif text-sm tracking-widest text-gray-300 hover:text-emerald-glow transition-colors py-2">LEGACY</a>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section id="home" class="relative min-h-screen flex items-center pt-20 overflow-hidden">
+        <!-- Fog layer -->
+        <div class="fog-layer"></div>
+        
+        <!-- Background glow -->
+        <div class="absolute top-1/2 left-1/4 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-glow/10 rounded-full blur-[150px] pointer-events-none"></div>
+        
+        <div class="w-full px-6 lg:px-12 py-12 lg:py-0">
+            <div class="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center max-w-7xl mx-auto">
+                <!-- Left: 3D Model -->
+                <div class="relative order-2 lg:order-1">
+                    <div id="three-container" class="rounded-lg overflow-hidden"></div>
+                    <!-- Radial glow behind model -->
+                    <div class="absolute inset-0 bg-radial-gradient from-emerald-glow/20 via-transparent to-transparent pointer-events-none"></div>
+                </div>
+                
+                <!-- Right: Content Panel -->
+                <div class="relative order-1 lg:order-2">
+                    <!-- Vine decorations -->
+                    <svg class="vine-decoration -top-8 -left-4 w-24 h-32 text-emerald-glow/40" viewBox="0 0 100 150" fill="currentColor">
+                        <path d="M50 0 Q30 30 50 60 Q70 90 50 120 Q40 135 50 150" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <ellipse cx="35" cy="40" rx="8" ry="5" transform="rotate(-30 35 40)"/>
+                        <ellipse cx="65" cy="80" rx="8" ry="5" transform="rotate(30 65 80)"/>
+                        <ellipse cx="45" cy="110" rx="6" ry="4" transform="rotate(-20 45 110)"/>
+                    </svg>
+                    <svg class="vine-decoration -bottom-4 -right-4 w-20 h-24 text-emerald-glow/30" viewBox="0 0 100 150" fill="currentColor">
+                        <path d="M50 150 Q70 120 50 90 Q30 60 50 30 Q60 15 50 0" stroke="currentColor" stroke-width="2" fill="none"/>
+                        <ellipse cx="65" cy="110" rx="8" ry="5" transform="rotate(30 65 110)"/>
+                        <ellipse cx="35" cy="70" rx="8" ry="5" transform="rotate(-30 35 70)"/>
+                    </svg>
+                    
+                    <!-- Stone Panel -->
+                    <div class="stone-panel rounded-lg p-8 lg:p-12 relative">
+                        <!-- Corner ornaments -->
+                        <div class="absolute top-3 left-3 w-6 h-6 border-t-2 border-l-2 border-gold-accent/40"></div>
+                        <div class="absolute top-3 right-3 w-6 h-6 border-t-2 border-r-2 border-gold-accent/40"></div>
+                        <div class="absolute bottom-3 left-3 w-6 h-6 border-b-2 border-l-2 border-gold-accent/40"></div>
+                        <div class="absolute bottom-3 right-3 w-6 h-6 border-b-2 border-r-2 border-gold-accent/40"></div>
+                        
+                        <!-- Triforce subtle decoration -->
+                        <div class="absolute top-6 right-8 opacity-20">
+                            <div class="triforce-decoration"></div>
+                        </div>
+                        
+                        <!-- Content -->
+                        <h1 class="font-fantasy text-3xl lg:text-5xl gold-gradient mb-4 leading-tight">
+                            The Legend of Zelda:<br>
+                            <span class="text-4xl lg:text-6xl">Ocarina of Time</span>
+                        </h1>
+                        
+                        <p class="font-body text-lg lg:text-xl text-gray-400 italic mb-6">
+                            "The flow of time is always cruel... Its speed seems different for each person, but no one can change it..."
+                        </p>
+                        
+                        <div class="space-y-4 mb-8">
+                            <p class="font-body text-base text-gray-300 leading-relaxed">
+                                Step into the mystical realm of Hyrule, where a young boy named Link embarks on an epic journey across time itself. Released in 1998 for the Nintendo 64, this masterpiece redefined adventure gaming and set the standard for 3D action-RPGs.
+                            </p>
+                            <p class="font-body text-base text-gray-300 leading-relaxed">
+                                From the tranquil depths of Kokiri Forest to the towering spires of Ganon's Castle, experience a world where magic flows through ancient ocarina melodies and destiny awaits at every turn.
+                            </p>
+                        </div>
+                        
+                        <!-- CTA Button -->
+                        <button class="cta-button px-8 py-4 rounded-lg font-serif text-lg tracking-widest text-white transition-all duration-300 animate-glow-pulse">
+                            ENTER HYRULE
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Scroll indicator -->
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-60">
+            <span class="font-serif text-xs tracking-widest text-gray-400">SCROLL</span>
+            <div class="w-px h-12 bg-gradient-to-b from-emerald-glow to-transparent"></div>
+        </div>
+    </section>
+    
+    <!-- About Section -->
+    <section id="about" class="relative py-24 lg:py-32 overflow-hidden">
+        <div class="fog-layer opacity-50"></div>
+        
+        <div class="w-full px-6 lg:px-12 relative z-10">
+            <div class="max-w-4xl mx-auto text-center reveal">
+                <!-- Divider -->
+                <div class="divider mb-8">
+                    <div class="divider-line"></div>
+                    <div class="triforce-decoration scale-75"></div>
+                    <div class="divider-line"></div>
+                </div>
+                
+                <h2 class="font-fantasy text-3xl lg:text-5xl gold-gradient mb-8">
+                    A Legend Forged in Time
+                </h2>
+                
+                <div class="space-y-6 text-left lg:text-center">
+                    <p class="font-body text-lg lg:text-xl text-gray-300 leading-relaxed">
+                        <span class="text-emerald-glow font-semibold">The Legend of Zelda: Ocarina of Time</span> stands as one of the most influential video games ever created. Released in November 1998 for the Nintendo 64, it marked the series' bold leap into 3D gaming under the direction of Shigeru Miyamoto and Eiji Aonuma.
+                    </p>
+                    
+                    <p class="font-body text-lg text-gray-400 leading-relaxed">
+                        The game introduced revolutionary mechanics like Z-targeting, context-sensitive actions, and a dynamic camera system that would become industry standards. But beyond its technical achievements, Ocarina of Time crafted an emotional narrative that resonated with millions—a tale of courage, friendship, and the bittersweet passage of time.
+                    </p>
+                    
+                    <div class="grid md:grid-cols-3 gap-6 mt-12">
+                        <div class="stone-panel rounded-lg p-6 text-center">
+                            <div class="font-fantasy text-3xl gold-accent mb-2">1998</div>
+                            <div class="font-serif text-sm text-gray-400 tracking-wider">RELEASE YEAR</div>
+                        </div>
+                        <div class="stone-panel rounded-lg p-6 text-center">
+                            <div class="font-fantasy text-3xl gold-accent mb-2">N64</div>
+                            <div class="font-serif text-sm text-gray-400 tracking-wider">PLATFORM</div>
+                        </div>
+                        <div class="stone-panel rounded-lg p-6 text-center">
+                            <div class="font-fantasy text-3xl gold-accent mb-2">7.6M+</div>
+                            <div class="font-serif text-sm text-gray-400 tracking-wider">COPIES SOLD</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Characters Section -->
+    <section id="characters" class="relative py-24 lg:py-32 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-transparent via-forest-deep/50 to-transparent"></div>
+        
+        <div class="w-full px-6 lg:px-12 relative z-10">
+            <div class="max-w-6xl mx-auto">
+                <!-- Section Header -->
+                <div class="text-center mb-16 reveal">
+                    <div class="divider mb-6 justify-center">
+                        <div class="divider-line max-w-24"></div>
+                        <div class="triforce-decoration scale-75"></div>
+                        <div class="divider-line max-w-24"></div>
+                    </div>
+                    <h2 class="font-fantasy text-3xl lg:text-5xl gold-gradient">
+                        Heroes & Villains
+                    </h2>
+                    <p class="font-body text-lg text-gray-400 mt-4 max-w-2xl mx-auto">
+                        The fate of Hyrule rests in the hands of these legendary figures, each bound by destiny to the Triforce.
+                    </p>
+                </div>
+                
+                <!-- Characters Grid -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8">
+                    <!-- Link -->
+                    <div class="character-card rounded-lg overflow-hidden relative reveal">
+                        <div class="aspect-[4/5] overflow-hidden">
+                            <img src="images/character-link.jpg" alt="Link" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-forest-dark via-forest-dark/95 to-transparent">
+                            <h3 class="font-fantasy text-2xl gold-accent mb-2">Link</h3>
+                            <p class="font-body text-sm text-gray-300 leading-relaxed">
+                                The Hero of Time, chosen by the Master Sword. A Kokiri boy without a fairy who discovers his destiny to save Hyrule from darkness.
+                            </p>
+                            <div class="mt-3 flex items-center gap-2">
+                                <span class="px-3 py-1 rounded-full bg-emerald-glow/20 text-emerald-glow text-xs font-serif tracking-wider">COURAGE</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Zelda -->
+                    <div class="character-card rounded-lg overflow-hidden relative reveal">
+                        <div class="aspect-[4/5] overflow-hidden">
+                            <img src="images/character-zelda.jpg" alt="Princess Zelda" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-forest-dark via-forest-dark/95 to-transparent">
+                            <h3 class="font-fantasy text-2xl gold-accent mb-2">Princess Zelda</h3>
+                            <p class="font-body text-sm text-gray-300 leading-relaxed">
+                                The wise princess of Hyrule, bearer of the Triforce of Wisdom. She guides Link through time, revealing prophecies and ancient secrets.
+                            </p>
+                            <div class="mt-3 flex items-center gap-2">
+                                <span class="px-3 py-1 rounded-full bg-cyan-magic/20 text-cyan-magic text-xs font-serif tracking-wider">WISDOM</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Ganondorf -->
+                    <div class="character-card rounded-lg overflow-hidden relative reveal">
+                        <div class="aspect-[4/5] overflow-hidden">
+                            <img src="images/character-ganondorf.jpg" alt="Ganondorf" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-forest-dark via-forest-dark/95 to-transparent">
+                            <h3 class="font-fantasy text-2xl gold-accent mb-2">Ganondorf</h3>
+                            <p class="font-body text-sm text-gray-300 leading-relaxed">
+                                The King of Evil, Gerudo warlord who seeks the Triforce to conquer Hyrule. His power knows no bounds, his ambition no limits.
+                            </p>
+                            <div class="mt-3 flex items-center gap-2">
+                                <span class="px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-xs font-serif tracking-wider">POWER</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Saria -->
+                    <div class="character-card rounded-lg overflow-hidden relative reveal">
+                        <div class="aspect-[4/5] overflow-hidden">
+                            <img src="images/character-saria.jpg" alt="Saria" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-forest-dark via-forest-dark/95 to-transparent">
+                            <h3 class="font-fantasy text-2xl gold-accent mb-2">Saria</h3>
+                            <p class="font-body text-sm text-gray-300 leading-relaxed">
+                                Link's childhood friend and the Sage of the Forest. Her ocarina melodies echo through the Lost Woods, a bond that transcends time.
+                            </p>
+                            <div class="mt-3 flex items-center gap-2">
+                                <span class="px-3 py-1 rounded-full bg-emerald-glow/20 text-emerald-glow text-xs font-serif tracking-wider">FOREST SAGE</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Sheik -->
+                    <div class="character-card rounded-lg overflow-hidden relative reveal">
+                        <div class="aspect-[4/5] overflow-hidden">
+                            <img src="images/character-sheik.jpg" alt="Sheik" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-forest-dark via-forest-dark/95 to-transparent">
+                            <h3 class="font-fantasy text-2xl gold-accent mb-2">Sheik</h3>
+                            <p class="font-body text-sm text-gray-300 leading-relaxed">
+                                Mysterious Sheikah warrior who aids Adult Link. Master of the harp, keeper of secrets, shadow in the darkness of Hyrule.
+                            </p>
+                            <div class="mt-3 flex items-center gap-2">
+                                <span class="px-3 py-1 rounded-full bg-purple-500/20 text-purple-400 text-xs font-serif tracking-wider">SHEIKAH</span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Navi -->
+                    <div class="character-card rounded-lg overflow-hidden relative reveal">
+                        <div class="aspect-[4/5] overflow-hidden">
+                            <img src="images/character-navi.jpg" alt="Navi" class="w-full h-full object-cover transition-transform duration-500 hover:scale-110">
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-forest-dark via-forest-dark/95 to-transparent">
+                            <h3 class="font-fantasy text-2xl gold-accent mb-2">Navi</h3>
+                            <p class="font-body text-sm text-gray-300 leading-relaxed">
+                                Link's fairy companion, assigned by the Great Deku Tree. Her glowing light guides the hero through darkness and danger.
+                            </p>
+                            <div class="mt-3 flex items-center gap-2">
+                                <span class="px-3 py-1 rounded-full bg-cyan-magic/20 text-cyan-magic text-xs font-serif tracking-wider">FAIRY</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Story Section -->
+    <section id="story" class="relative py-24 lg:py-32 overflow-hidden">
+        <!-- Parallax background -->
+        <div class="absolute inset-0 bg-gradient-to-b from-forest-deep via-forest-dark to-forest-deep"></div>
+        <div class="absolute inset-0 opacity-20" style="background-image: radial-gradient(circle at 20% 50%, rgba(45, 158, 92, 0.2) 0%, transparent 50%), radial-gradient(circle at 80% 50%, rgba(201, 162, 39, 0.1) 0%, transparent 50%);"></div>
+        
+        <div class="w-full px-6 lg:px-12 relative z-10">
+            <div class="max-w-5xl mx-auto">
+                <!-- Section Header -->
+                <div class="text-center mb-16 reveal">
+                    <div class="divider mb-6 justify-center">
+                        <div class="divider-line max-w-24"></div>
+                        <div class="triforce-decoration scale-75"></div>
+                        <div class="divider-line max-w-24"></div>
+                    </div>
+                    <h2 class="font-fantasy text-3xl lg:text-5xl gold-gradient">
+                        The Epic Journey
+                    </h2>
+                </div>
+                
+                <!-- Story Timeline -->
+                <div class="space-y-12">
+                    <!-- Chapter 1 -->
+                    <div class="reveal">
+                        <div class="stone-panel rounded-lg p-8 lg:p-10 relative">
+                            <div class="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-emerald-glow rounded-full border-4 border-forest-dark hidden lg:block"></div>
+                            <div class="lg:pl-8">
+                                <span class="font-serif text-sm text-emerald-glow tracking-widest">CHAPTER ONE</span>
+                                <h3 class="font-fantasy text-2xl lg:text-3xl gold-accent mt-2 mb-4">The Boy Without a Fairy</h3>
+                                <p class="font-body text-lg text-gray-300 leading-relaxed">
+                                    In the tranquil Kokiri Forest, a boy named Link lives among the eternal children, the only one without a fairy companion. When the Great Deku Tree summons him, Link's destiny begins to unfold. He must venture into the tree's hollow to cleanse the ancient curse placed upon it by a wicked man from the desert.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Chapter 2 -->
+                    <div class="reveal">
+                        <div class="stone-panel rounded-lg p-8 lg:p-10 relative">
+                            <div class="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-gold-accent rounded-full border-4 border-forest-dark hidden lg:block"></div>
+                            <div class="lg:pl-8">
+                                <span class="font-serif text-sm text-gold-accent tracking-widest">CHAPTER TWO</span>
+                                <h3 class="font-fantasy text-2xl lg:text-3xl gold-accent mt-2 mb-4">The Spiritual Stones</h3>
+                                <p class="font-body text-lg text-gray-300 leading-relaxed">
+                                    Guided by Princess Zelda's vision, Link embarks on a quest to gather the three Spiritual Stones. From the Gorons of Death Mountain to the Zoras of the river, he earns the trust of Hyrule's people and collects the stones needed to open the Door of Time. But Ganondorf's shadow looms ever closer.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Chapter 3 -->
+                    <div class="reveal">
+                        <div class="stone-panel rounded-lg p-8 lg:p-10 relative">
+                            <div class="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-cyan-magic rounded-full border-4 border-forest-dark hidden lg:block"></div>
+                            <div class="lg:pl-8">
+                                <span class="font-serif text-sm text-cyan-magic tracking-widest">CHAPTER THREE</span>
+                                <h3 class="font-fantasy text-2xl lg:text-3xl gold-accent mt-2 mb-4">The Master Sword</h3>
+                                <p class="font-body text-lg text-gray-300 leading-relaxed">
+                                    At the Temple of Time, Link draws the legendary Master Sword, becoming the Hero of Time. But the sword seals him away for seven years, for he was too young to be the hero. When he awakens, Hyrule has fallen to darkness, and he must journey through time to awaken the Sages who can seal Ganondorf away forever.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Chapter 4 -->
+                    <div class="reveal">
+                        <div class="stone-panel rounded-lg p-8 lg:p-10 relative">
+                            <div class="absolute -left-3 top-1/2 -translate-y-1/2 w-6 h-6 bg-red-500 rounded-full border-4 border-forest-dark hidden lg:block"></div>
+                            <div class="lg:pl-8">
+                                <span class="font-serif text-sm text-red-400 tracking-widest">FINAL CHAPTER</span>
+                                <h3 class="font-fantasy text-2xl lg:text-3xl gold-accent mt-2 mb-4">The Final Battle</h3>
+                                <p class="font-body text-lg text-gray-300 leading-relaxed">
+                                    With all Sages awakened, Link storms Ganon's Castle. In the crumbling ruins, he faces Ganondorf in an epic duel, then confronts the beast Ganon in the void of the collapsing castle. With the power of the Sages and Zelda's magic, the King of Evil is sealed away, and peace returns to Hyrule. But Link's journey through time leaves him with bittersweet memories of a world that moved on without him.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- World Section -->
+    <section id="world" class="relative py-24 lg:py-32 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-forest-dark via-forest-deep to-forest-dark"></div>
+        
+        <div class="w-full px-6 lg:px-12 relative z-10">
+            <div class="max-w-6xl mx-auto">
+                <!-- Section Header -->
+                <div class="text-center mb-16 reveal">
+                    <div class="divider mb-6 justify-center">
+                        <div class="divider-line max-w-24"></div>
+                        <div class="triforce-decoration scale-75"></div>
+                        <div class="divider-line max-w-24"></div>
+                    </div>
+                    <h2 class="font-fantasy text-3xl lg:text-5xl gold-gradient">
+                        Realms of Hyrule
+                    </h2>
+                    <p class="font-body text-lg text-gray-400 mt-4 max-w-2xl mx-auto">
+                        From verdant forests to scorching mountains, explore the diverse lands that make up the kingdom of Hyrule.
+                    </p>
+                </div>
+                
+                <!-- Locations Grid -->
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <!-- Kokiri Forest -->
+                    <div class="location-card rounded-lg overflow-hidden group cursor-pointer reveal">
+                        <div class="aspect-[4/3] overflow-hidden">
+                            <img src="images/location-kokiri.jpg" alt="Kokiri Forest" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6 z-10">
+                            <h3 class="location-title font-fantasy text-xl gold-accent transition-all duration-300">Kokiri Forest</h3>
+                            <p class="font-body text-sm text-gray-300 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                The eternal woodland home of the Kokiri children and the Great Deku Tree.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Hyrule Field -->
+                    <div class="location-card rounded-lg overflow-hidden group cursor-pointer reveal">
+                        <div class="aspect-[4/3] overflow-hidden">
+                            <img src="images/location-hyrule-field.jpg" alt="Hyrule Field" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6 z-10">
+                            <h3 class="location-title font-fantasy text-xl gold-accent transition-all duration-300">Hyrule Field</h3>
+                            <p class="font-body text-sm text-gray-300 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                The vast central plains connecting all corners of the kingdom.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Temple of Time -->
+                    <div class="location-card rounded-lg overflow-hidden group cursor-pointer reveal">
+                        <div class="aspect-[4/3] overflow-hidden">
+                            <img src="images/location-temple-time.jpg" alt="Temple of Time" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6 z-10">
+                            <h3 class="location-title font-fantasy text-xl gold-accent transition-all duration-300">Temple of Time</h3>
+                            <p class="font-body text-sm text-gray-300 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                The sacred sanctuary housing the Master Sword and the Door of Time.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Death Mountain -->
+                    <div class="location-card rounded-lg overflow-hidden group cursor-pointer reveal">
+                        <div class="aspect-[4/3] overflow-hidden">
+                            <img src="images/location-death-mountain.jpg" alt="Death Mountain" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6 z-10">
+                            <h3 class="location-title font-fantasy text-xl gold-accent transition-all duration-300">Death Mountain</h3>
+                            <p class="font-body text-sm text-gray-300 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                The volcanic peak home to the Goron people and the Fire Temple.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Zora's Domain -->
+                    <div class="location-card rounded-lg overflow-hidden group cursor-pointer reveal">
+                        <div class="aspect-[4/3] overflow-hidden">
+                            <img src="images/location-zora-domain.jpg" alt="Zora's Domain" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6 z-10">
+                            <h3 class="location-title font-fantasy text-xl gold-accent transition-all duration-300">Zora's Domain</h3>
+                            <p class="font-body text-sm text-gray-300 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                The aquatic paradise of the Zora people, hidden behind a waterfall.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <!-- Ganon's Castle -->
+                    <div class="location-card rounded-lg overflow-hidden group cursor-pointer reveal">
+                        <div class="aspect-[4/3] overflow-hidden">
+                            <img src="images/location-ganon-castle.jpg" alt="Ganon's Castle" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110">
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 p-6 z-10">
+                            <h3 class="location-title font-fantasy text-xl gold-accent transition-all duration-300">Ganon's Castle</h3>
+                            <p class="font-body text-sm text-gray-300 mt-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                The fortress of evil that rises over Hyrule Castle in the dark future.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Legacy Section -->
+    <section id="legacy" class="relative py-24 lg:py-32 overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-forest-deep to-forest-dark"></div>
+        
+        <div class="w-full px-6 lg:px-12 relative z-10">
+            <div class="max-w-4xl mx-auto text-center reveal">
+                <div class="divider mb-6 justify-center">
+                    <div class="divider-line max-w-24"></div>
+                    <div class="triforce-decoration scale-75"></div>
+                    <div class="divider-line max-w-24"></div>
+                </div>
+                
+                <h2 class="font-fantasy text-3xl lg:text-5xl gold-gradient mb-8">
+                    An Enduring Legacy
+                </h2>
+                
+                <p class="font-body text-lg lg:text-xl text-gray-300 leading-relaxed mb-8">
+                    More than two decades after its release, Ocarina of Time continues to inspire game developers and captivate players. Its influence can be seen in countless action-adventure games, from its lock-on combat system to its approach to storytelling and world-building.
+                </p>
+                
+                <p class="font-body text-lg text-gray-400 leading-relaxed mb-12">
+                    The game has received numerous accolades, including perfect scores from major publications and recognition as one of the greatest games of all time. Its music, composed by Koji Kondo, remains iconic—the Ocarina melodies are instantly recognizable to gamers worldwide.
+                </p>
+                
+                <div class="stone-panel rounded-lg p-8 inline-block">
+                    <p class="font-body text-xl italic text-gray-300">
+                        "It's dangerous to go alone! Take this."
+                    </p>
+                    <p class="font-serif text-sm text-gray-500 mt-4 tracking-wider">— A LEGEND THAT LIVES FOREVER</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="relative py-16 overflow-hidden" style="background: linear-gradient(180deg, #0b1f14 0%, #07150e 100%);">
+        <div class="absolute inset-0 opacity-10">
+            <div class="absolute top-0 left-1/4 w-px h-full bg-gradient-to-b from-transparent via-gold-accent to-transparent"></div>
+            <div class="absolute top-0 right-1/4 w-px h-full bg-gradient-to-b from-transparent via-emerald-glow to-transparent"></div>
+        </div>
+        
+        <div class="w-full px-6 lg:px-12 relative z-10">
+            <div class="max-w-4xl mx-auto text-center">
+                <!-- Triforce -->
+                <div class="flex justify-center mb-8">
+                    <div class="triforce-decoration scale-100 opacity-40"></div>
+                </div>
+                
+                <h3 class="font-fantasy text-2xl gold-gradient mb-4">The Legend of Zelda</h3>
+                <p class="font-body text-gray-500 mb-8">
+                    Ocarina of Time Tribute Site
+                </p>
+                
+                <div class="flex justify-center gap-6 mb-8">
+                    <a href="#home" class="font-serif text-sm text-gray-500 hover:text-emerald-glow transition-colors tracking-wider">HOME</a>
+                    <a href="#characters" class="font-serif text-sm text-gray-500 hover:text-emerald-glow transition-colors tracking-wider">CHARACTERS</a>
+                    <a href="#story" class="font-serif text-sm text-gray-500 hover:text-emerald-glow transition-colors tracking-wider">STORY</a>
+                    <a href="#world" class="font-serif text-sm text-gray-500 hover:text-emerald-glow transition-colors tracking-wider">WORLD</a>
+                </div>
+                
+                <div class="border-t border-gray-800 pt-8">
+                    <p class="font-body text-sm text-gray-600">
+                        A fan tribute to one of gaming's greatest masterpieces. <br>
+                        The Legend of Zelda: Ocarina of Time is a trademark of Nintendo.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- JavaScript -->
+    <script src="script.js"></script>
+</body>
+</html>
