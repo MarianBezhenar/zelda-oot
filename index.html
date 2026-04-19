@@ -8,9 +8,8 @@
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Three.js CDN -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+    <!-- Model Viewer Web Component -->
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
     
     <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -229,11 +228,23 @@
         
         <div class="w-full px-6 lg:px-12 py-12 lg:py-0">
             <div class="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center max-w-7xl mx-auto">
-                <!-- Left: 3D Model -->
+                <!-- Left: 3D Model (Ocarina) -->
                 <div class="relative order-2 lg:order-1">
-                    <div id="three-container" class="rounded-lg overflow-hidden"></div>
+                    <model-viewer 
+                        id="ocarina-model"
+                        src="/models/ocarina.glb"
+                        alt="Ocarina of Time 3D Model"
+                        auto-rotate
+                        auto-rotate-delay="0"
+                        rotation-per-second="56deg"
+                        ar
+                        environment-image="neutral"
+                        exposure="0.5"
+                        class="rounded-lg overflow-hidden animate-bob"
+                        style="width: 100%; height: 500px; background: transparent;">
+                    </model-viewer>
                     <!-- Radial glow behind model -->
-                    <div class="absolute inset-0 bg-radial-gradient from-emerald-glow/20 via-transparent to-transparent pointer-events-none"></div>
+                    <div class="absolute inset-0 bg-radial-gradient from-emerald-glow/20 via-transparent to-transparent pointer-events-none rounded-lg"></div>
                 </div>
                 
                 <!-- Right: Content Panel -->

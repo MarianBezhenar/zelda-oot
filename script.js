@@ -226,307 +226,6 @@ class ParticleSystem {
 }
 
 // ============================================
-// THREE.JS - 3D Link Model Scene
-// ============================================
-class ThreeJSScene {
-    constructor() {
-        this.container = document.getElementById('three-container');
-        this.scene = null;
-        this.camera = null;
-        this.renderer = null;
-        this.model = null;
-        this.lights = {};
-        this.mouseX = 0;
-        this.mouseY = 0;
-        this.targetRotationX = 0;
-        this.targetRotationY = 0;
-        this.isLoaded = false;
-        
-        this.init();
-    }
-    
-    init() {
-        if (!this.container) return;
-        
-        // Create scene
-        this.scene = new THREE.Scene();
-        this.scene.background = null; // Transparent background
-        
-        // Create camera
-        this.camera = new THREE.PerspectiveCamera(
-            45,
-            this.container.clientWidth / this.container.clientHeight,
-            0.1,
-            1000
-        );
-        this.camera.position.set(0, 0, 5);
-        
-        // Create renderer
-        this.renderer = new THREE.WebGLRenderer({ 
-            antialias: true, 
-            alpha: true 
-        });
-        this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
-        this.renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-        this.renderer.shadowMap.enabled = true;
-        this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-        this.container.appendChild(this.renderer.domElement);
-        
-        // Setup lighting
-        this.setupLighting();
-        
-        // Create placeholder model (since we don't have actual GLTF)
-        this.createPlaceholderModel();
-        
-        // Bind events
-        this.bindEvents();
-        
-        // Start animation loop
-        this.animate();
-    }
-    
-    setupLighting() {
-        // Ambient light - soft green forest atmosphere
-        this.lights.ambient = new THREE.AmbientLight(0x2d9e5c, 0.4);
-        this.scene.add(this.lights.ambient);
-        
-        // Main directional light - simulating forest light
-        this.lights.main = new THREE.DirectionalLight(0x4dd0e1, 0.8);
-        this.lights.main.position.set(2, 3, 4);
-        this.lights.main.castShadow = true;
-        this.lights.main.shadow.mapSize.width = 1024;
-        this.lights.main.shadow.mapSize.height = 1024;
-        this.scene.add(this.lights.main);
-        
-        // Rim light - golden accent
-        this.lights.rim = new THREE.DirectionalLight(0xc9a227, 0.5);
-        this.lights.rim.position.set(-3, 2, -2);
-        this.scene.add(this.lights.rim);
-        
-        // Fill light - soft emerald
-        this.lights.fill = new THREE.PointLight(0x2d9e5c, 0.3, 10);
-        this.lights.fill.position.set(0, -1, 2);
-        this.scene.add(this.lights.fill);
-    }
-    
-    createPlaceholderModel() {
-        // Create a stylized Link-inspired figure using basic geometries
-        // This serves as a placeholder since we don't have the actual GLTF model
-        
-        const group = new THREE.Group();
-        
-        // Materials
-        const tunicMaterial = new THREE.MeshStandardMaterial({
-            color: 0x2d9e5c,
-            roughness: 0.7,
-            metalness: 0.1
-        });
-        
-        const skinMaterial = new THREE.MeshStandardMaterial({
-            color: 0xffdbac,
-            roughness: 0.5,
-            metalness: 0
-        });
-        
-        const hatMaterial = new THREE.MeshStandardMaterial({
-            color: 0x1a4a2e,
-            roughness: 0.8,
-            metalness: 0.1
-        });
-        
-        const bootMaterial = new THREE.MeshStandardMaterial({
-            color: 0x8b4513,
-            roughness: 0.6,
-            metalness: 0.2
-        });
-        
-        const swordMaterial = new THREE.MeshStandardMaterial({
-            color: 0xc0c0c0,
-            roughness: 0.2,
-            metalness: 0.9,
-            emissive: 0x4dd0e1,
-            emissiveIntensity: 0.2
-        });
-        
-        const hiltMaterial = new THREE.MeshStandardMaterial({
-            color: 0x4a0080,
-            roughness: 0.4,
-            metalness: 0.5
-        });
-        
-        // Body (tunic)
-        const body = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.35, 0.45, 1.2, 8),
-            tunicMaterial
-        );
-        body.position.y = 0;
-        body.castShadow = true;
-        group.add(body);
-        
-        // Head
-        const head = new THREE.Mesh(
-            new THREE.SphereGeometry(0.3, 16, 16),
-            skinMaterial
-        );
-        head.position.y = 0.85;
-        head.castShadow = true;
-        group.add(head);
-        
-        // Hat
-        /*const hat = new THREE.Mesh(
-            new THREE.ConeGeometry(0.25, 0.8, 8),
-            hatMaterial
-        );
-        hat.position.set(0, 1.3, -0.1);
-        hat.rotation.x = -0.3;
-        hat.castShadow = true;
-        group.add(hat);*/
-        
-        // Left arm
-        const leftArm = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.1, 0.12, 0.7, 8),
-            skinMaterial
-        );
-        leftArm.position.set(-0.5, 0.2, 0);
-        leftArm.rotation.z = 0.3;
-        leftArm.castShadow = true;
-        group.add(leftArm);
-        
-        // Right arm
-        const rightArm = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.1, 0.12, 0.7, 8),
-            skinMaterial
-        );
-        rightArm.position.set(0.5, 0.2, 0.2);
-        rightArm.rotation.z = -0.5;
-        rightArm.rotation.x = -0.3;
-        rightArm.castShadow = true;
-        group.add(rightArm);
-        
-        // Sword blade
-        const sword = new THREE.Mesh(
-            new THREE.BoxGeometry(0.08, 1.2, 0.02),
-            swordMaterial
-        );
-        sword.position.set(0.6, 0.6, 0.4);
-        sword.rotation.x = 0.2;
-        sword.castShadow = true;
-        group.add(sword);
-        
-        // Sword hilt
-        const hilt = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.05, 0.05, 0.25, 8),
-            hiltMaterial
-        );
-        hilt.position.set(0.6, 0, 0.35);
-        hilt.rotation.x = 0.2;
-        group.add(hilt);
-        
-        // Sword guard
-        const guard = new THREE.Mesh(
-            new THREE.BoxGeometry(0.25, 0.05, 0.08),
-            hiltMaterial
-        );
-        guard.position.set(0.6, 0.12, 0.37);
-        guard.rotation.x = 0.2;
-        group.add(guard);
-        
-        // Left boot
-        const leftBoot = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.12, 0.15, 0.5, 8),
-            bootMaterial
-        );
-        leftBoot.position.set(-0.2, -0.85, 0);
-        leftBoot.castShadow = true;
-        group.add(leftBoot);
-        
-        // Right boot
-        const rightBoot = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.12, 0.15, 0.5, 8),
-            bootMaterial
-        );
-        rightBoot.position.set(0.2, -0.85, 0);
-        rightBoot.castShadow = true;
-        group.add(rightBoot);
-        
-        // Shield (simplified)
-        const shield = new THREE.Mesh(
-            new THREE.CylinderGeometry(0.4, 0.4, 0.05, 8),
-            new THREE.MeshStandardMaterial({
-                color: 0x1a4a2e,
-                roughness: 0.5,
-                metalness: 0.3
-            })
-        );
-        shield.position.set(-0.35, 0.1, 0.25);
-        shield.rotation.x = 0.3;
-        shield.rotation.z = -0.2;
-        shield.castShadow = true;
-        group.add(shield);
-        
-        // Triforce symbol on shield
-        const triforce = new THREE.Mesh(
-            new THREE.ConeGeometry(0.08, 0.15, 3),
-            new THREE.MeshStandardMaterial({
-                color: 0xc9a227,
-                emissive: 0xc9a227,
-                emissiveIntensity: 0.3
-            })
-        );
-        triforce.position.set(-0.35, 0.15, 0.3);
-        triforce.rotation.x = 0.3;
-        triforce.rotation.z = -0.2;
-        group.add(triforce);
-        
-        this.model = group;
-        this.scene.add(this.model);
-        this.isLoaded = true;
-    }
-    
-    bindEvents() {
-        // Mouse movement for parallax effect
-        window.addEventListener('mousemove', (e) => {
-            this.mouseX = (e.clientX / window.innerWidth - 0.5) * 2;
-            this.mouseY = (e.clientY / window.innerHeight - 0.5) * 2;
-        });
-        
-        // Resize handler
-        window.addEventListener('resize', () => {
-            if (!this.camera || !this.renderer) return;
-            
-            this.camera.aspect = this.container.clientWidth / this.container.clientHeight;
-            this.camera.updateProjectionMatrix();
-            this.renderer.setSize(this.container.clientWidth, this.container.clientHeight);
-        });
-    }
-    
-    animate() {
-        requestAnimationFrame(() => this.animate());
-        
-        if (!this.model) return;
-        
-        // Idle animation - gentle floating
-        const time = Date.now() * 0.001;
-        this.model.position.y = Math.sin(time) * 0.05;
-        
-        // Mouse-based rotation (parallax)
-        this.targetRotationY = this.mouseX * 0.3;
-        this.targetRotationX = this.mouseY * 0.1;
-        
-        // Smooth interpolation
-        this.model.rotation.y += (this.targetRotationY - this.model.rotation.y) * 0.05;
-        this.model.rotation.x += (this.targetRotationX - this.model.rotation.x) * 0.05;
-        
-        // Subtle breathing animation
-        const breathe = 1 + Math.sin(time * 2) * 0.01;
-        this.model.scale.set(breathe, breathe, breathe);
-        
-        // Render
-        this.renderer.render(this.scene, this.camera);
-    }
-}
-
-// ============================================
 // SCROLL ANIMATIONS - Intersection Observer
 // ============================================
 class ScrollAnimations {
@@ -668,11 +367,11 @@ class CharacterCards {
 // ============================================
 class SmoothScroll {
     constructor() {
-        this.isScrolling = false;
         this.init();
     }
     
     init() {
+        // Simple anchor link smooth scroll
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', (e) => {
                 e.preventDefault();
@@ -688,11 +387,8 @@ class SmoothScroll {
                         hamburgerIcon?.classList.remove('menu-open');
                     }
                     
-                    // Scroll to target - scroll snap will handle the snapping
-                    target.scrollIntoView({
-                        behavior: 'smooth',
-                        block: 'start'
-                    });
+                    // Native smooth scroll
+                    target.scrollIntoView({ behavior: 'smooth' });
                 }
             });
         });
@@ -1047,7 +743,6 @@ document.addEventListener('DOMContentLoaded', () => {
     window.addEventListener('preloaderComplete', () => {
         // Initialize all other components after preloader
         new ParticleSystem();
-        new ThreeJSScene();
         new ScrollAnimations();
         new Navbar();
         new CharacterCards();
